@@ -1,0 +1,38 @@
+version: "3"
+services:
+  graphql:
+    build: ./ap
+    container_name: graphql-flask-server
+    environment:
+      - DATABASE_HOST=graphql-mysql-server
+      - DATABASE_PORT=3306
+      - DATABASE_USER=docker
+      - DATABASE_PASSWORD=docker
+      - DATABASE_NAME=sample_database
+      - FLASK_PORT=80
+      - GUNICORN_CMD_ARGS=--config=config/gunicorn_settings.py
+      - PASSPHRASE=passphrase
+    ports:
+      - 80:80
+    networks:
+      my-network:
+        aliases:
+          - flask-server
+
+  mysql:
+    build: ./db
+    container_name: graphql-mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - MYSQL_DATABASE=sample_database
+    ports:
+      - 3306:3306
+    networks:
+      my-network:
+        aliases:
+          - graphql-mysql-server
+
+networks:
+  my-network:
